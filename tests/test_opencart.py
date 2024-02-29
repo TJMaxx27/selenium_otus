@@ -5,6 +5,7 @@ from conftest import is_element_displayed
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
 import time
 import random
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 def test_home_page(browser):
@@ -185,35 +186,35 @@ def test_register_account(browser):
 
 
 def test_add_random_product_to_cart(browser):
-    browser.get("http://192.168.1.6:8081/")
+    browser.get('http://192.168.1.6:8081/')
     wait = WebDriverWait(browser, 5, poll_frequency=1)
 
     # Список с XPath кнопок "Add to Cart"
     xpath_list = [
         '//*[@id="content"]/div[2]/div[2]/div/div[2]/form/div/button[1]',
-        '//*[@id="content"]/div[2]/div[1]/div/div[2]/form/div/button[1]',
+        '//*[@id="content"]/div[2]/div[1]/div/div[2]/form/div/button[1]'
     ]
 
     random_xpath = random.choice(xpath_list)
 
-    add_to_cart_button = wait.until(
-        EC.element_to_be_clickable((By.XPATH, random_xpath))
-    )
+    add_to_cart_button = wait.until(EC.element_to_be_clickable((By.XPATH, random_xpath)))
 
     browser.execute_script("arguments[0].scrollIntoView(true);", add_to_cart_button)
-    time.sleep(0.5)
 
-    add_to_cart_button.click()
-    time.sleep(0.5)
+    while True:
+        try:
+            add_to_cart_button.click()
+            break
+        except ElementClickInterceptedException:
+            add_to_cart_button = wait.until(EC.element_to_be_clickable((By.XPATH, random_xpath)))
 
-    shopping_cart_item = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, ".btn.btn-lg.btn-inverse.btn-block.dropdown-toggle")
-        )
+    browser.execute_script("window.scrollTo(0, 0);")
+    wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn-close[data-bs-dismiss="alert"]'))).click()
+    shopping_cart_item_text = wait.until(
+        EC.text_to_be_present_in_element((By.CSS_SELECTOR, '#header-cart .dropdown-toggle'), "1 item(s)")
     )
-    shopping_cart_item_text = shopping_cart_item.text
-    expected_item = "1 item(s)"
-    assert expected_item in shopping_cart_item_text, f"Товар не найден в корзине"
+
+    assert shopping_cart_item_text, 'Товар не найден в корзине'
 
 
 def test_currency_change_main_page(browser):
