@@ -6,8 +6,10 @@ from register_page import RegisterPage
 from desktop_page import DesktopsPage
 from config import ADMIN_USERNAME, ADMIN_PASSWORD
 from generate_random_user import generate_random_user
+import allure
 
 
+@allure.feature("Главная страница")
 def test_home_page(browser):
     home_page = HomePage(browser)
     home_page.load()
@@ -22,6 +24,7 @@ def test_home_page(browser):
     assert home_page.header.is_login_displayed()
 
 
+@allure.feature("Страница каталога ноутбуков")
 def test_catalog_laptop_notebooks(browser):
     catalog_page = CatalogLaptopsPage(browser)
     catalog_page.load()
@@ -32,6 +35,7 @@ def test_catalog_laptop_notebooks(browser):
     assert catalog_page.is_product_list_view()
 
 
+@allure.feature("Страница информации о продукте HP LP3065")
 def test_product_info_hp_lp3065(browser):
     product_info_page = ProductInfoPage(browser)
     product_info_page.load()
@@ -43,6 +47,7 @@ def test_product_info_hp_lp3065(browser):
     assert product_info_page.is_add_to_cart_displayed()
 
 
+@allure.feature("Страница администрирования")
 def test_administration_login(browser):
     admin_page = AdminPage(browser)
     admin_page.load()
@@ -57,6 +62,7 @@ def test_administration_login(browser):
     assert admin_page.is_header_displayed()
 
 
+@allure.feature("Страница регистрации")
 def test_register_account(browser):
     register_page = RegisterPage(browser)
     register_page.load()
@@ -67,6 +73,7 @@ def test_register_account(browser):
     assert register_page.is_continue_button_displayed()
 
 
+@allure.feature("Добавление случайного продукта в корзину")
 def test_add_random_product_to_cart(browser):
     home_page = HomePage(browser)
     home_page.load()
@@ -74,6 +81,7 @@ def test_add_random_product_to_cart(browser):
     assert home_page.is_product_added_to_cart()
 
 
+@allure.feature("Смена валюты на главной странице")
 def test_currency_change_main_page(browser):
     home_page = HomePage(browser)
     home_page.load()
@@ -91,6 +99,7 @@ def test_currency_change_main_page(browser):
     assert price_after_change != price_before_change, "Цена не изменилась"
 
 
+@allure.feature("Смена валюты на странице каталога компьютеров")
 def test_currency_change_catalog_desktops_page(browser):
     desktops_page = DesktopsPage(browser)
     desktops_page.load()
@@ -100,6 +109,7 @@ def test_currency_change_catalog_desktops_page(browser):
     assert price_after_change != price_before_change, "Цена не изменилась"
 
 
+@allure.feature("Добавление продукта в административной секции")
 def test_add_product_in_admin_section(browser):
     admin_page = AdminPage(browser)
     admin_page.load()
@@ -111,6 +121,7 @@ def test_add_product_in_admin_section(browser):
     admin_page.modified_popup()
 
 
+@allure.feature("Удаление продукта в административной секции")
 def test_delete_product_in_admin_section(browser):
     admin_page = AdminPage(browser)
     admin_page.load()
@@ -123,6 +134,7 @@ def test_delete_product_in_admin_section(browser):
     admin_page.modified_popup()
 
 
+@allure.feature("Регистрация нового пользователя")
 def test_register_new_user(browser):
     home_page = HomePage(browser)
     home_page.load()

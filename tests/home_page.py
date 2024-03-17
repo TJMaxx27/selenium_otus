@@ -1,53 +1,74 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException
 from header_section import HeaderSection
 import random
+import logging
 
 
 class HomePage:
     def __init__(self, browser):
         self.browser = browser
         self.header = HeaderSection(browser)
+        self.logger = logging.getLogger(__name__)
 
+    @allure.step("Загрузка главной страницы")
     def load(self):
+        self.logger.info("Загрузка главной страницы")
         self.browser.get("http://192.168.1.6:8081/")
 
+    @allure.step("Проверка отображения логотипа")
     def is_logo_displayed(self):
+        self.logger.info("Проверка отображения логотипа")
         return self._is_element_displayed(
             By.CSS_SELECTOR,
             'img[src="http://192.168.1.6:8081/image/catalog/opencart-logo.png"]',
         )
 
+    @allure.step("Проверка отображения поля поиска")
     def is_search_field_displayed(self):
+        self.logger.info("Проверка отображения поля поиска")
         return self._is_element_displayed(By.ID, "search")
 
+    @allure.step("Проверка отображения корзины")
     def is_cart_displayed(self):
+        self.logger.info("Проверка отображения корзины")
         return self._is_element_displayed(By.ID, "header-cart")
 
+    @allure.step("Проверка отображения карусели")
     def is_carousel_displayed(self):
+        self.logger.info("Проверка отображения карусели")
         return self._is_element_displayed(By.ID, "carousel-banner-0")
 
+    @allure.step("Проверка отображения изображения MacBook")
     def is_macbook_image_displayed(self):
+        self.logger.info("Проверка отображения изображения MacBook")
         return self._is_element_displayed(
             By.CSS_SELECTOR,
             'img[src="http://192.168.1.6:8081/image/cache/catalog/demo/banners/MacBookAir-1140x380.jpg"]',
         )
 
+    @allure.step("Проверка отображения изображения iPhone")
     def is_iphone_image_displayed(self):
+        self.logger.info("Проверка отображения изображения iPhone")
         return self._is_element_displayed(
             By.CSS_SELECTOR,
             'img[src="http://192.168.1.6:8081/image/cache/catalog/demo/banners/iPhone6-1140x380.jpg"]',
         )
 
+    @allure.step("Проверка отображения ссылки выхода из аккаунта")
     def is_logout_displayed(self):
+        self.logger.info("Проверка отображения ссылки выхода из аккаунта")
         return self._is_element_displayed(
             By.XPATH,
             'a.list-group-item[href^="http://192.168.1.6:8081/en-gb?route=account/logout"]',
         )
 
+    @allure.step("Добавление случайного товара в корзину")
     def add_random_product_to_cart(self):
+        self.logger.info("Добавление случайного товара в корзину")
         xpath_list = [
             '//*[@id="content"]/div[2]/div[2]/div/div[2]/form/div/button[1]',
             '//*[@id="content"]/div[2]/div[1]/div/div[2]/form/div/button[1]',
@@ -72,14 +93,18 @@ class HomePage:
                     EC.element_to_be_clickable((By.XPATH, random_xpath))
                 )
 
+    @allure.step("Проверка, что товар добавлен в корзину")
     def is_product_added_to_cart(self):
+        self.logger.info("Проверка, что товар добавлен в корзину")
         return WebDriverWait(self.browser, 10).until(
             EC.text_to_be_present_in_element(
                 (By.CSS_SELECTOR, "#header-cart .dropdown-toggle"), "1 item(s)"
             )
         )
 
+    @allure.step("Получение цен товаров")
     def get_product_prices(self):
+        self.logger.info("Получение цен товаров")
         return [
             price.text
             for price in self.browser.find_elements(By.CSS_SELECTOR, ".price-new")

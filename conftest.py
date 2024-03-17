@@ -6,6 +6,11 @@ from selenium.webdriver.firefox.options import Options as FireFoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import logging
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 
 def pytest_addoption(parser):
@@ -45,4 +50,3 @@ def is_element_displayed(driver, by, value):
         return True
     except TimeoutException:
         return False
-

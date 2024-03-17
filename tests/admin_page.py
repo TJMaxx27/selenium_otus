@@ -1,3 +1,5 @@
+import allure
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -6,28 +8,38 @@ from selenium.webdriver.support import expected_conditions as EC
 class AdminPage:
     def __init__(self, browser):
         self.browser = browser
+        self.logger = logging.getLogger(__name__)
 
+    @allure.step("Загрузка страницы администрирования")
     def load(self):
+        self.logger.info("Загрузка страницы администрирования")
         self.browser.get("http://192.168.1.6:8081/administration/")
 
+    @allure.step("Проверка отображения логотипа")
     def is_logo_displayed(self):
         return self._is_element_displayed(
             By.CSS_SELECTOR, 'img[src="view/image/logo.png"]'
         )
 
+    @allure.step("Проверка отображения заголовка")
     def is_header_displayed(self):
         return self._is_element_displayed(By.CSS_SELECTOR, ".card-header")
 
+    @allure.step("Проверка отображения поля 'Имя пользователя'")
     def is_username_field_displayed(self):
         return self._is_element_displayed(By.ID, "input-username")
 
+    @allure.step("Проверка отображения поля 'Пароль'")
     def is_password_field_displayed(self):
         return self._is_element_displayed(By.ID, "input-password")
 
+    @allure.step("Проверка отображения кнопки 'Войти'")
     def is_login_button_displayed(self):
         return self._is_element_displayed(By.CLASS_NAME, "btn-primary")
 
+    @allure.step("Авторизация пользователя")
     def login(self, username, password):
+        self.logger.info(f"Авторизация пользователя {username}")
         self.browser.find_element(By.ID, "input-username").send_keys(username)
         self.browser.find_element(By.ID, "input-password").send_keys(password)
         self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
@@ -35,10 +47,13 @@ class AdminPage:
             EC.presence_of_element_located((By.LINK_TEXT, "Logout"))
         )
 
+    @allure.step("Проверка отображения страницы 'Dashboard'")
     def is_dashboard_displayed(self):
         return self._is_element_displayed(By.XPATH, "//h1[text()='Dashboard']")
 
+    @allure.step("Переход на вкладку 'Продукты'")
     def go_to_catalog_and_products(self):
+        self.logger.info("Переход на вкладку Продукты")
         catalog_menu = self.browser.find_element(
             By.CSS_SELECTOR, 'a.parent[href="#collapse-1"][data-bs-toggle="collapse"]'
         )
@@ -55,13 +70,17 @@ class AdminPage:
         )
         return products_menu
 
+    @allure.step("Кнопка 'New Product'")
     def add_new_product_button(self):
+        self.logger.info("Кнопка new_product")
         add_new_product_button = WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "i.fa-solid.fa-plus"))
         )
         return add_new_product_button
 
+    @allure.step("Добавление нового продукта")
     def add_product(self):
+        self.logger.info("Добавление нового продукта")
         self.browser.find_element(By.ID, "input-name-1").send_keys("iPhoneXs_test")
         self.browser.find_element(By.ID, "input-meta-title-1").send_keys(
             "iPhoneXs_test"
@@ -75,31 +94,39 @@ class AdminPage:
         ).click()
         self.browser.find_element(By.ID, "input-keyword-0-1").send_keys("iPhoneXS")
 
+    @allure.step("Кнопка 'Save'")
     def save_button(self):
+        self.logger.info("Кнопка Save")
         return self.browser.find_element(
             By.XPATH,
             "//button[@type='submit' and @form='form-product' and contains(@title, 'Save')]",
         )
 
+    @allure.step("Поиск тестового продукта в списке продуктов")
     def find_test_product_in_products(self):
         return self.browser.find_element(
             By.XPATH, f"//td[contains(text(), 'iPhoneXs_test')]/.."
         )
 
+    @allure.step("Выбор чекбокса тестового продукта")
     def find_checkbox_test_product(self):
         test_product_row = self.find_test_product_in_products()
         return test_product_row.find_element(
             By.CSS_SELECTOR, 'input[type="checkbox"][name="selected[]"]'
         )
 
+    @allure.step("Кнопка 'Delete'")
     def delete_button(self):
+        self.logger.info("Кнопка удалить")
         return self.browser.find_element(By.XPATH, "//button[@title='Delete']")
 
+    @allure.step("Обработка всплывающего окна 'Успешно изменено'")
     def alert_window_success(self):
         alert = WebDriverWait(self.browser, 10).until(EC.alert_is_present())
         alert.accept()
         return alert
 
+    @allure.step("Ожидание всплывающего окна 'Успешно изменено'")
     def modified_popup(self):
         modified_popup = WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located(
@@ -108,7 +135,9 @@ class AdminPage:
         )
         return modified_popup
 
+    @allure.step("Выход из аккаунта")
     def logout(self):
+        self.logger.info("Логаут")
         self.browser.find_element(By.LINK_TEXT, "Logout").click()
         WebDriverWait(self.browser, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, ".card-header"))
