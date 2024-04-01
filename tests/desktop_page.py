@@ -2,7 +2,7 @@ import allure
 import logging
 from selenium.webdriver.common.by import By
 from header_section import HeaderSection
-
+from conftest import allure_attach_screenshot_on_failed
 
 class DesktopsPage:
     def __init__(self, browser):
@@ -10,11 +10,13 @@ class DesktopsPage:
         self.header = HeaderSection(browser)
         self.logger = logging.getLogger(__name__)
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Загрузка страницы с компьютерами")
     def load(self):
         self.logger.info("Загрузка страницы с компьютерами")
         self.browser.get("http://192.168.1.6:8081/en-gb/catalog/desktops")
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Смена валюты на Польскую Крону")
     def change_currency_to_poland_sterling(self):
         self.logger.info("Смена валюты на Польскую Крону")
@@ -27,6 +29,7 @@ class DesktopsPage:
         )
         eur_option.click()
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Получение цен продуктов")
     def get_product_prices(self):
         self.logger.info("Получение цен продуктов")
