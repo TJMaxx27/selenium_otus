@@ -3,13 +3,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logging
 import allure
-
+from conftest import allure_attach_screenshot_on_failed
 
 class HeaderSection:
     def __init__(self, browser):
         self.browser = browser
         self.logger = logging.getLogger(__name__)
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Клик по кнопке My Account")
     def click_my_account(self):
         self.logger.info("Клик по кнопке My Account")
@@ -18,6 +19,7 @@ class HeaderSection:
         )
         my_account.click()
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Проверка отображения ссылки на регистрацию")
     def is_register_displayed(self):
         self.logger.info("Проверка отображения ссылки на регистрацию")
@@ -26,6 +28,7 @@ class HeaderSection:
         )
         return register
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Проверка отображения ссылки на вход")
     def is_login_displayed(self):
         self.logger.info("Проверка отображения ссылки на вход")
@@ -34,6 +37,7 @@ class HeaderSection:
         )
         return login
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Смена валюты")
     def change_currency(self, currency_name):
         self.logger.info(f"Смена валюты на {currency_name}")
@@ -47,6 +51,7 @@ class HeaderSection:
         )
         currency_option.click()
 
+    @allure_attach_screenshot_on_failed
     @allure.step("Проверка смены валюты")
     def is_currency_changed(self, expected_currency):
         self.logger.info(f"Проверка смены валюты на {expected_currency}")
